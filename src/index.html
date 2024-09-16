@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8" />
+    <title>UniPeek</title>
+  </head>
+
+  <body>
+
+  <div class="title-bar">
+    <label>
+      <input placeholder="Enter text to inspect" oninput="search(this)">
+    </label>
+
+    <table id="results" style="visibility: hidden">
+      <thead>
+        <th>Symbol</th>
+        <th>Code</th>
+        <th>Name</th>
+      </thead>
+    </table>
+  </div>
+
+  <script>
+    let api = window['unicode-api'];
+
+    let results = document.getElementById("results");
+    results.oldHTML=results.innerHTML;
+    results.removeAllRows = () => {
+      results.innerHTML = results.oldHTML;
+    }
+
+    function search (input) {
+      let text = input.value;
+      if (!!text) {
+        results.style.visibility = '';
+      } else {
+        results.style.visibility = 'hidden';
+        return;
+      }
+
+      results.removeAllRows();
+
+      api
+              .getInfo(text)
+              .forEach(addRow)
+    }
+
+    function addRow(data) {
+      let newRow = results.insertRow();
+
+      function addColumn(col) {
+        newRow
+                .insertCell()
+                .appendChild(
+                        document.createTextNode(col)
+                );
+      }
+
+      addColumn(data.symbol);
+      addColumn(data.code);
+      addColumn(data.name);
+    }
+  </script>
+</html>
